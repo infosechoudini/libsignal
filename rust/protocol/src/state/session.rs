@@ -18,7 +18,7 @@ use crate::proto::storage::{RecordStructure, SessionStructure};
 use crate::state::{PreKeyId, SignedPreKeyId};
 
 /// A distinct error type to keep from accidentally propagating deserialization errors.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub(crate) struct InvalidSessionError(&'static str);
 
 impl std::fmt::Display for InvalidSessionError {
@@ -600,20 +600,21 @@ impl SessionRecord {
 
     // A non-fallible version of archive_current_state.
     fn archive_current_state_inner(&mut self) {
-        if let Some(current_session) = self.current_session.take() {
-            if self.previous_sessions.len() >= consts::ARCHIVED_STATES_MAX_LENGTH {
-                self.previous_sessions.pop();
+
+        match self.current_session.take() {
+            Some(current_session) => {
+                if self.previous_sessions.len() >= consts::ARCHIVED_STATES_MAX_LENGTH {
+                    self.previous_sessions.pop();
+                }
+                self.previous_sessions.insert(0, current_session.session.encode_to_vec());            }
+            None => {
+                log::info!("Skipping archive, current session state is fresh",);
             }
-            self.previous_sessions
-                .insert(0, current_session.session.encode_to_vec());
-        } else {
-            log::info!("Skipping archive, current session state is fresh",);
         }
     }
 
-    pub fn archive_current_state(&mut self) -> Result<(), SignalProtocolError> {
+    pub fn archive_current_state(&mut self) {  // should delete becuase it doesnt anything -> Result<(), SignalProtocolError> {
         self.archive_current_state_inner();
-        Ok(())
     }
 
     pub fn serialize(&self) -> Result<Vec<u8>, SignalProtocolError> {

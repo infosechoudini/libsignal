@@ -8,6 +8,8 @@ use futures_util::FutureExt;
 use libsignal_protocol::*;
 use rand::rngs::OsRng;
 
+use std::time::Duration;
+
 #[path = "../tests/support/mod.rs"]
 mod support;
 
@@ -74,7 +76,7 @@ pub fn session_encrypt_result(c: &mut Criterion) -> Result<(), SignalProtocolErr
         .now_or_never()
         .expect("sync")?
         .expect("already decrypted successfully");
-    state.archive_current_state()?;
+    state.archive_current_state();
     alice_store
         .store_session(&bob_address, &state, None)
         .now_or_never()
@@ -244,6 +246,15 @@ pub fn session_encrypt_decrypt(mut c: &mut Criterion) {
     session_encrypt_decrypt_result(&mut c).expect("success");
 }
 
-criterion_group!(benches, session_encrypt, session_encrypt_decrypt);
+
+fn short_warmup() -> Criterion {
+    Criterion::default().warm_up_time(Duration::from_secs(5))
+}
+
+criterion_group! {
+    name = benches;
+    config = short_warmup();
+    targets = session_encrypt, session_encrypt_decrypt
+}
 
 criterion_main!(benches);

@@ -36,8 +36,11 @@ thiserror = "1.0.30"
 armv8 = ["aes/armv8", "aes-gcm-siv/armv8"]
 
 [dev-dependencies]
-criterion = "0.3"
+criterion = {version = "0.3", features = ["async_futures"]}
 futures-util = "0.3.7"
+test-log = "0.2.10"
+env_logger = "0.9.0"
+futures = { version = "0.3.21", features = ["executor"]}
 
 [build-dependencies]
 prost-build = "0.9"

@@ -11,10 +11,13 @@ use rand::rngs::OsRng;
 use std::convert::TryFrom;
 use support::*;
 
+use test_log::test;
+
 #[test]
 #[allow(clippy::eval_order_dependence)]
 fn test_basic_prekey_v3() -> Result<(), SignalProtocolError> {
     async {
+        let _ = env_logger::builder().is_test(true).try_init();
         let mut csprng = OsRng;
 
         let alice_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
@@ -278,6 +281,8 @@ fn test_basic_prekey_v3() -> Result<(), SignalProtocolError> {
 #[allow(clippy::eval_order_dependence)]
 fn chain_jump_over_limit() -> Result<(), SignalProtocolError> {
     async {
+        let _ = env_logger::builder().is_test(true).try_init();
+
         let mut csprng = OsRng;
 
         let alice_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
@@ -368,6 +373,8 @@ fn chain_jump_over_limit() -> Result<(), SignalProtocolError> {
 fn chain_jump_over_limit_with_self() -> Result<(), SignalProtocolError> {
     async {
         let mut csprng = OsRng;
+
+        let _ = env_logger::builder().is_test(true).try_init();
 
         let a1_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
         let a2_address = ProtocolAddress::new("+14151111111".to_owned(), 2);
@@ -463,6 +470,8 @@ fn chain_jump_over_limit_with_self() -> Result<(), SignalProtocolError> {
 #[allow(clippy::eval_order_dependence)]
 fn test_bad_signed_pre_key_signature() -> Result<(), SignalProtocolError> {
     async {
+        let _ = env_logger::builder().is_test(true).try_init();
+
         let bob_address = ProtocolAddress::new("+14151111112".to_owned(), 1);
 
         let mut alice_store = support::test_in_memory_protocol_store()?;
@@ -544,6 +553,8 @@ fn test_bad_signed_pre_key_signature() -> Result<(), SignalProtocolError> {
 #[allow(clippy::eval_order_dependence)]
 fn repeat_bundle_message_v3() -> Result<(), SignalProtocolError> {
     async {
+        let _ = env_logger::builder().is_test(true).try_init();
+
         let alice_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
         let bob_address = ProtocolAddress::new("+14151111112".to_owned(), 1);
 
@@ -678,6 +689,8 @@ fn repeat_bundle_message_v3() -> Result<(), SignalProtocolError> {
 #[allow(clippy::eval_order_dependence)]
 fn bad_message_bundle() -> Result<(), SignalProtocolError> {
     async {
+        let _ = env_logger::builder().is_test(true).try_init();
+
         let mut csprng = OsRng;
 
         let alice_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
@@ -801,6 +814,8 @@ fn bad_message_bundle() -> Result<(), SignalProtocolError> {
 #[allow(clippy::eval_order_dependence)]
 fn optional_one_time_prekey() -> Result<(), SignalProtocolError> {
     async {
+        let _ = env_logger::builder().is_test(true).try_init();
+
         let alice_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
         let bob_address = ProtocolAddress::new("+14151111112".to_owned(), 1);
 
@@ -889,6 +904,8 @@ fn optional_one_time_prekey() -> Result<(), SignalProtocolError> {
 
 #[test]
 fn basic_session_v3() -> Result<(), SignalProtocolError> {
+    let _ = env_logger::builder().is_test(true).try_init();
+
     let (alice_session, bob_session) = initialize_sessions_v3()?;
     run_session_interaction(alice_session, bob_session)?;
     Ok(())
@@ -897,6 +914,7 @@ fn basic_session_v3() -> Result<(), SignalProtocolError> {
 #[test]
 fn message_key_limits() -> Result<(), SignalProtocolError> {
     async {
+        
         let (alice_session_record, bob_session_record) = initialize_sessions_v3()?;
 
         let alice_address = ProtocolAddress::new("+14159999999".to_owned(), 1);
@@ -1165,6 +1183,8 @@ async fn is_session_id_equal(
 #[test]
 fn basic_simultaneous_initiate() -> Result<(), SignalProtocolError> {
     async {
+        let _ = env_logger::builder().is_test(true).try_init();
+
         let mut csprng = OsRng;
 
         let alice_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
@@ -1306,6 +1326,7 @@ fn basic_simultaneous_initiate() -> Result<(), SignalProtocolError> {
 fn simultaneous_initiate_with_lossage() -> Result<(), SignalProtocolError> {
     async {
         let mut csprng = OsRng;
+        let _ = env_logger::builder().is_test(true).try_init();
 
         let alice_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
         let bob_address = ProtocolAddress::new("+14151111112".to_owned(), 1);
@@ -1427,6 +1448,8 @@ fn simultaneous_initiate_with_lossage() -> Result<(), SignalProtocolError> {
 #[test]
 fn simultaneous_initiate_lost_message() -> Result<(), SignalProtocolError> {
     async {
+        let _ = env_logger::builder().is_test(true).try_init();
+
         let mut csprng = OsRng;
 
         let alice_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
@@ -1558,6 +1581,8 @@ fn simultaneous_initiate_lost_message() -> Result<(), SignalProtocolError> {
 #[test]
 fn simultaneous_initiate_repeated_messages() -> Result<(), SignalProtocolError> {
     async {
+        let _ = env_logger::builder().is_test(true).try_init();
+
         let mut csprng = OsRng;
 
         let alice_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
@@ -1760,6 +1785,8 @@ fn simultaneous_initiate_repeated_messages() -> Result<(), SignalProtocolError> 
 #[test]
 fn simultaneous_initiate_lost_message_repeated_messages() -> Result<(), SignalProtocolError> {
     async {
+        let _ = env_logger::builder().is_test(true).try_init();
+
         let mut csprng = OsRng;
 
         let alice_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
@@ -2010,6 +2037,8 @@ fn simultaneous_initiate_lost_message_repeated_messages() -> Result<(), SignalPr
 #[test]
 fn test_needs_pni_signature() -> Result<(), SignalProtocolError> {
     async {
+        let _ = env_logger::builder().is_test(true).try_init();
+
         let mut csprng = OsRng;
 
         let alice_address = ProtocolAddress::new("+14151111111".to_owned(), 1);
@@ -2076,7 +2105,8 @@ fn test_needs_pni_signature() -> Result<(), SignalProtocolError> {
             .expect("has current session"));
 
         // If you archive the session, you don't get to ask.
-        alice_session_with_bob.archive_current_state()?;
+        alice_session_with_bob.archive_current_state();
+        
         assert!(alice_session_with_bob.needs_pni_signature().is_err());
 
         Ok(())

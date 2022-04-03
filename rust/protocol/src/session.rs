@@ -87,34 +87,40 @@ async fn process_prekey_v3(
         .await?
         .key_pair()?;
 
-    let our_one_time_pre_key_pair = if let Some(pre_key_id) = message.pre_key_id() {
-        log::info!("processing PreKey message from {}", remote_address);
-        Some(
-            pre_key_store
-                .get_pre_key(pre_key_id, ctx)
+
+
+    //Created MATCH case instead of if let 
+    // Match pre_key_id, if it has any value, return the value to the variable for later
+    let our_one_time_pre_key_pair = match message.pre_key_id(){
+        Some(_) => {
+            log::info!("processing PreKey message from {}", remote_address);
+            Some(pre_key_store
+                .get_pre_key(message.pre_key_id().unwrap(), ctx)
                 .await?
-                .key_pair()?,
-        )
-    } else {
-        log::warn!(
-            "processing PreKey message from {} which had no one-time prekey",
-            remote_address
-        );
-        None
+                .key_pair()?,)
+            }
+        None => {
+            log::warn!(
+                "processing PreKey message from {} which had no one-time prekey",
+                remote_address
+            );
+            None
+        }
     };
 
-    let parameters = BobSignalProtocolParameters::new(
+
+    session_record.archive_current_state();
+
+
+    //Added Bob Protocol Parameters to intialize session
+    let mut new_session = ratchet::initialize_bob_session(&BobSignalProtocolParameters::new(
         identity_store.get_identity_key_pair(ctx).await?,
         our_signed_pre_key_pair, // signed pre key
         our_one_time_pre_key_pair,
         our_signed_pre_key_pair, // ratchet key
         *message.identity_key(),
         *message.base_key(),
-    );
-
-    session_record.archive_current_state()?;
-
-    let mut new_session = ratchet::initialize_bob_session(&parameters)?;
+    ))?;
 
     new_session.set_local_registration_id(identity_store.get_local_registration_id(ctx).await?);
     new_session.set_remote_registration_id(message.registration_id());
