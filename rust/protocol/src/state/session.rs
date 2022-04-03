@@ -613,8 +613,9 @@ impl SessionRecord {
         }
     }
 
-    pub fn archive_current_state(&mut self) {  // should delete becuase it doesnt anything -> Result<(), SignalProtocolError> {
+    pub fn archive_current_state(&mut self) -> Result<(), SignalProtocolError> {
         self.archive_current_state_inner();
+        Ok(())
     }
 
     pub fn serialize(&self) -> Result<Vec<u8>, SignalProtocolError> {
