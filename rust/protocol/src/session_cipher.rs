@@ -32,9 +32,12 @@ pub async fn message_encrypt(
         .session_state_mut()
         .ok_or_else(|| SignalProtocolError::SessionNotFound(remote_address.clone()))?;
 
-    let chain_key = session_state.get_sender_chain_key()?;
 
-    let message_keys = chain_key.message_keys();
+
+        //Added get_initial_keys function to reduce the need to have to lets on the same variable
+        //Passes `cargo test session`
+    let (chain_key, message_keys) = session_state.get_sender_chain_key()?.get_initial_keys();
+
 
     let sender_ephemeral = session_state.sender_ratchet_key()?;
     let previous_counter = session_state.previous_counter();

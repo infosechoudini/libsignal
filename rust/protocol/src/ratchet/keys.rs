@@ -9,6 +9,7 @@ use crate::crypto;
 use crate::{PrivateKey, PublicKey, Result};
 use std::fmt;
 
+#[derive(Clone, Debug)]
 pub(crate) struct MessageKeys {
     cipher_key: [u8; 32],
     mac_key: [u8; 32],
@@ -99,10 +100,19 @@ impl ChainKey {
         )
     }
 
+
+    //function used to gather initial keys in session_cipher::message_encrypt
+    pub(crate) fn get_initial_keys(&self) ->(ChainKey, MessageKeys) {
+        let message_keys = self.message_keys();
+        let chain_key = self.clone();
+        (chain_key, message_keys)
+    }
+
     fn calculate_base_material(&self, seed: [u8; 1]) -> [u8; 32] {
         crypto::hmac_sha256(&self.key, &seed)
     }
 }
+
 
 #[derive(Clone, Debug)]
 pub(crate) struct RootKey {

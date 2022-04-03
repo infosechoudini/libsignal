@@ -1,0 +1,39 @@
+session decrypt first message                                                                            
+                        time:   [156.44 us 158.69 us 161.16 us]
+Found 13 outliers among 100 measurements (13.00%)
+  7 (7.00%) high mild
+  6 (6.00%) high severe
+
+session encrypt         time:   [13.556 us 14.143 us 14.882 us]                             
+Found 12 outliers among 100 measurements (12.00%)
+  3 (3.00%) high mild
+  9 (9.00%) high severe
+
+session decrypt         time:   [14.632 us 14.937 us 15.315 us]                             
+Found 17 outliers among 100 measurements (17.00%)
+  8 (8.00%) high mild
+  9 (9.00%) high severe
+
+session decrypt with archived state                                                                             
+                        time:   [15.198 us 15.669 us 16.335 us]
+Found 12 outliers among 100 measurements (12.00%)
+  3 (3.00%) high mild
+  9 (9.00%) high severe
+
+session decrypt using previous state                                                                            
+                        time:   [181.56 us 185.61 us 190.53 us]
+Found 13 outliers among 100 measurements (13.00%)
+  3 (3.00%) high mild
+  10 (10.00%) high severe
+
+session encrypt+decrypt 1 way                                                                             
+                        time:   [26.831 us 27.313 us 27.840 us]
+Found 16 outliers among 100 measurements (16.00%)
+  3 (3.00%) high mild
+  13 (13.00%) high severe
+
+session encrypt+decrypt ping pong                                                                            
+                        time:   [354.23 us 363.35 us 373.67 us]
+Found 15 outliers among 100 measurements (15.00%)
+  3 (3.00%) high mild
+  12 (12.00%) high severe
