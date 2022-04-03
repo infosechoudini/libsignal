@@ -1,8 +1,8 @@
-name: Build and Test
+name: Infosechoudini CI Build and Test
 
 on:
   push:
-    branches: [ main ]
+    branches: [ session_crypto_improvement ]
   pull_request: # all target branches
 
 env:
