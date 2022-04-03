@@ -734,7 +734,7 @@ fn test_sealed_sender_multi_recipient_encrypt_with_archived_session(
             .load_session(&bob_uuid_address, None)
             .await?
             .expect("present");
-        session.archive_current_state();
+        session.archive_current_state()?;
         match sealed_sender_multi_recipient_encrypt(
             &recipients,
             &[&session],

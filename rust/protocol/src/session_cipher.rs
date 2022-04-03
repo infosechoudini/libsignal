@@ -190,6 +190,8 @@ pub async fn message_decrypt_prekey<R: Rng + CryptoRng>(
         .await?
         .unwrap_or_else(SessionRecord::new_fresh);
 
+
+        /* 
     // Make sure we log the session state if we fail to process the pre-key.
     let pre_key_id_or_err = session::process_prekey(
         ciphertext,
@@ -202,7 +204,18 @@ pub async fn message_decrypt_prekey<R: Rng + CryptoRng>(
     )
     .await;
 
-    let pre_key_id = match pre_key_id_or_err {
+    */
+
+    let pre_key_id = match session::process_prekey(
+        ciphertext,
+        remote_address,
+        &mut session_record,
+        identity_store,
+        pre_key_store,
+        signed_pre_key_store,
+        ctx,
+    )
+    .await {
         Ok(id) => id,
         Err(e) => {
             let errs = [e];

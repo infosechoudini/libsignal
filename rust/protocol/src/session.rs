@@ -109,7 +109,7 @@ async fn process_prekey_v3(
     };
 
 
-    session_record.archive_current_state();
+    session_record.archive_current_state()?;
 
 
     //Added Bob Protocol Parameters to intialize session

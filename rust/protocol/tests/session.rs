@@ -2105,7 +2105,7 @@ fn test_needs_pni_signature() -> Result<(), SignalProtocolError> {
             .expect("has current session"));
 
         // If you archive the session, you don't get to ask.
-        alice_session_with_bob.archive_current_state();
+        alice_session_with_bob.archive_current_state()?;
         
         assert!(alice_session_with_bob.needs_pni_signature().is_err());
 
