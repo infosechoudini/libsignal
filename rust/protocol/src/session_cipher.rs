@@ -17,7 +17,6 @@ use crate::state::{InvalidSessionError, SessionState};
 
 use rand::{CryptoRng, Rng};
 
-
 pub async fn message_encrypt(
     ptext: &[u8],
     remote_address: &ProtocolAddress,
@@ -33,12 +32,9 @@ pub async fn message_encrypt(
         .session_state_mut()
         .ok_or_else(|| SignalProtocolError::SessionNotFound(remote_address.clone()))?;
 
-
-
-        //Added get_initial_keys function to reduce the need to have to lets on the same variable
-        //Passes `cargo test session`
+    //Added get_initial_keys function to reduce the need to have to lets on the same variable
+    //Passes `cargo test session`
     let (chain_key, message_keys) = session_state.get_sender_chain_key()?.get_initial_keys();
-
 
     let sender_ephemeral = session_state.sender_ratchet_key()?;
     let previous_counter = session_state.previous_counter();
@@ -190,22 +186,6 @@ pub async fn message_decrypt_prekey<R: Rng + CryptoRng>(
         .await?
         .unwrap_or_else(SessionRecord::new_fresh);
 
-
-        /* 
-    // Make sure we log the session state if we fail to process the pre-key.
-    let pre_key_id_or_err = session::process_prekey(
-        ciphertext,
-        remote_address,
-        &mut session_record,
-        identity_store,
-        pre_key_store,
-        signed_pre_key_store,
-        ctx,
-    )
-    .await;
-
-    */
-
     let pre_key_id = match session::process_prekey(
         ciphertext,
         remote_address,
@@ -215,7 +195,8 @@ pub async fn message_decrypt_prekey<R: Rng + CryptoRng>(
         signed_pre_key_store,
         ctx,
     )
-    .await {
+    .await
+    {
         Ok(id) => id,
         Err(e) => {
             let errs = [e];
@@ -474,18 +455,12 @@ fn decrypt_message_with_record<R: Rng + CryptoRng>(
         }
     }
 
-    // Try some old sessions:
-    //let mut updated_session = None;
-
-    ////////////// LOOP ROLE //////////////
-
     // Rewriting previous session enumerate in loop roll rather than for_each
     // Increases speed in Session Decrypt Bench by ~ 5%
-    
     let record_clone = record.clone();
     let mut previous_states_enumerated = record_clone.previous_session_states().enumerate();
     loop {
-        if let Some(( idx, previous)) = previous_states_enumerated.next(){
+        if let Some((idx, previous)) = previous_states_enumerated.next() {
             let mut previous = previous?;
             let result = decrypt_message_with_state(
                 CurrentOrPrevious::Previous,
@@ -506,12 +481,9 @@ fn decrypt_message_with_record<R: Rng + CryptoRng>(
                             .sender_ratchet_key_for_logging()
                             .expect("successful decrypt always has a valid base key"),
                     );
-
-
                     // moved from below to this loop becuase there wasn't a need to add another couple lines and check below
                     // update old session
-                    record.promote_old_session(idx, previous);         
-                    
+                    record.promote_old_session(idx, previous);
                     //return plaintext
                     return Ok(ptext);
                 }
@@ -526,7 +498,6 @@ fn decrypt_message_with_record<R: Rng + CryptoRng>(
         } else {
             break;
         }
-        
     }
 
     let previous_state_count = || record.previous_session_states().len();
@@ -554,7 +525,6 @@ fn decrypt_message_with_record<R: Rng + CryptoRng>(
         original_message_type,
         "decryption failed",
     ))
-    
 }
 
 #[derive(Clone, Copy)]
@@ -669,9 +639,9 @@ fn get_or_create_chain_key<R: Rng + CryptoRng>(
 
     log::info!("{} creating new chains.", remote_address);
 
-    //let root_key = state.root_key()?;
-    //let our_ephemeral = state.sender_ratchet_private_key()?;
-    let receiver_chain = state.root_key()?.create_chain(their_ephemeral, &state.sender_ratchet_private_key()?)?;
+    let receiver_chain = state
+        .root_key()?
+        .create_chain(their_ephemeral, &state.sender_ratchet_private_key()?)?;
     let our_new_ephemeral = KeyPair::generate(csprng);
     let sender_chain = receiver_chain
         .0
@@ -753,15 +723,6 @@ fn get_or_create_message_key(
         state.set_message_keys(their_ephemeral, &chain_key.message_keys())?;
         chain_key = chain_key.next_chain_key();
     }
-
-
-    /* 
-    while chain_key.index() < counter {
-        //let message_keys = chain_key.message_keys();
-        state.set_message_keys(their_ephemeral, &chain_key.message_keys())?;
-        chain_key = chain_key.next_chain_key();
-    }
-    */
 
     state.set_receiver_chain_key(their_ephemeral, &chain_key.next_chain_key())?;
     Ok(chain_key.message_keys())

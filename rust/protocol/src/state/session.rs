@@ -600,13 +600,15 @@ impl SessionRecord {
 
     // A non-fallible version of archive_current_state.
     fn archive_current_state_inner(&mut self) {
-
         match self.current_session.take() {
             Some(current_session) => {
                 if self.previous_sessions.len() >= consts::ARCHIVED_STATES_MAX_LENGTH {
                     self.previous_sessions.pop();
                 }
-                self.previous_sessions.insert(0, current_session.session.encode_to_vec());            }
+
+                self.previous_sessions
+                    .insert(0, current_session.session.encode_to_vec());
+            }
             None => {
                 log::info!("Skipping archive, current session state is fresh",);
             }

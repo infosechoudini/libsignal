@@ -87,18 +87,18 @@ async fn process_prekey_v3(
         .await?
         .key_pair()?;
 
-
-
-    //Created MATCH case instead of if let 
+    //Created MATCH case instead of if let
     // Match pre_key_id, if it has any value, return the value to the variable for later
-    let our_one_time_pre_key_pair = match message.pre_key_id(){
+    let our_one_time_pre_key_pair = match message.pre_key_id() {
         Some(_) => {
             log::info!("processing PreKey message from {}", remote_address);
-            Some(pre_key_store
-                .get_pre_key(message.pre_key_id().unwrap(), ctx)
-                .await?
-                .key_pair()?,)
-            }
+            Some(
+                pre_key_store
+                    .get_pre_key(message.pre_key_id().unwrap(), ctx)
+                    .await?
+                    .key_pair()?,
+            )
+        }
         None => {
             log::warn!(
                 "processing PreKey message from {} which had no one-time prekey",
@@ -108,9 +108,7 @@ async fn process_prekey_v3(
         }
     };
 
-
     session_record.archive_current_state()?;
-
 
     //Added Bob Protocol Parameters to intialize session
     let mut new_session = ratchet::initialize_bob_session(&BobSignalProtocolParameters::new(

@@ -914,7 +914,6 @@ fn basic_session_v3() -> Result<(), SignalProtocolError> {
 #[test]
 fn message_key_limits() -> Result<(), SignalProtocolError> {
     async {
-        
         let (alice_session_record, bob_session_record) = initialize_sessions_v3()?;
 
         let alice_address = ProtocolAddress::new("+14159999999".to_owned(), 1);
@@ -2106,7 +2105,6 @@ fn test_needs_pni_signature() -> Result<(), SignalProtocolError> {
 
         // If you archive the session, you don't get to ask.
         alice_session_with_bob.archive_current_state()?;
-        
         assert!(alice_session_with_bob.needs_pni_signature().is_err());
 
         Ok(())

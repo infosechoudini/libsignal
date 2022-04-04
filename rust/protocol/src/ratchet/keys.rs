@@ -100,9 +100,8 @@ impl ChainKey {
         )
     }
 
-
     //function used to gather initial keys in session_cipher::message_encrypt
-    pub(crate) fn get_initial_keys(&self) ->(ChainKey, MessageKeys) {
+    pub(crate) fn get_initial_keys(&self) -> (ChainKey, MessageKeys) {
         let message_keys = self.message_keys();
         let chain_key = self.clone();
         (chain_key, message_keys)
@@ -112,7 +111,6 @@ impl ChainKey {
         crypto::hmac_sha256(&self.key, &seed)
     }
 }
-
 
 #[derive(Clone, Debug)]
 pub(crate) struct RootKey {

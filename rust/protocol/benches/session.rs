@@ -246,7 +246,6 @@ pub fn session_encrypt_decrypt(mut c: &mut Criterion) {
     session_encrypt_decrypt_result(&mut c).expect("success");
 }
 
-
 fn short_warmup() -> Criterion {
     Criterion::default().warm_up_time(Duration::from_secs(5))
 }
